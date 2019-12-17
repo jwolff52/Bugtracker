@@ -1,2 +1,6 @@
+# ASP.NET
 bin/
 Debug/
+
+# Editors
+.vscode/
