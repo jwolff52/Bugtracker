@@ -80,6 +80,7 @@
         * Old Value  
         * New Value  
         * When?  
+        * By Whom?  
       * Comments  
         * Commenter  
         * Message  
