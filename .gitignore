@@ -1,6 +1,10 @@
 # ASP.NET
 bin/
 Debug/
+Migrations/
 
 # Editors
 .vscode/
+
+# Other
+*.db
