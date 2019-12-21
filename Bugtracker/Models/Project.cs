@@ -15,7 +15,7 @@ namespace Bugtracker.Models {
 
     public class ProjectUser {
         public int ID {get; set; }
-        public Project Project { get; set; }
-        public TrackerUser User { get; set; }
+        public int ProjectID { get; set; }
+        public int UserID { get; set; }
     }
 }

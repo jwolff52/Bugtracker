@@ -7,23 +7,23 @@ namespace Bugtracker.Models {
         public string Title { get; set; }
         public string Description { get; set; }
         public List<TicketUser> AssignedDevelopers { get; set; }
-        public TrackerUser Creator { get; set; }
-        public Project Project { get; set; }
+        public int UserID { get; set; }
+        public int ProjectID { get; set; }
         public Priority Priority { get; set; }
         public Status Status { get; set; }
         public Type Type { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
 
-        public List<TicketHistory> History { get; set; }
-        public List<TicketComment> Comments { get; set; }
-        public List<TicketAttachment> Attachments { get; set; }
+        public List<TicketHistory> HistoryIDs { get; set; }
+        public List<TicketComment> CommentIDs { get; set; }
+        public List<TicketAttachment> AttachmentIDs { get; set; }
     }
 
     public class TicketUser {
         public int ID {get; set; }
-        public Ticket Ticket { get; set; }
-        public TrackerUser User { get; set; }
+        public int TicketID { get; set; }
+        public int UserID { get; set; }
     }
 
     public enum Priority {

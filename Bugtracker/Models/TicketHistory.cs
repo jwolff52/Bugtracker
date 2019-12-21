@@ -3,8 +3,8 @@ using System;
 namespace Bugtracker.Models {
     public class TicketHistory {
         public int ID { get; set; }
-        public Ticket Ticket { get; set; }
-        public TrackerUser User { get; set; }
+        public int TicketID { get; set; }
+        public int UserID { get; set; }
         public PropertyUpdated PropertyUpdated;
         public String OldValue { get; set; }
         public String NewValue { get; set; }
