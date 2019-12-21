@@ -9,7 +9,7 @@
 <h4>Project</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-5">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -22,10 +22,32 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DateCreated" class="control-label"></label>
-                <input asp-for="DateCreated" class="form-control" />
-                <span asp-validation-for="DateCreated" class="text-danger"></span>
+            <div class="form-group row align-items-center">
+                <div class="col">
+                    <label class="control-label">Avaliable Users</label>
+                    @Html.ListBox("AvaliableUsers", ViewBag.Users, new { size = "8", @class = "form-control"})
+                </div>
+                <div class="text-center">
+                    <br />
+                    @if (((MultiSelectList)(ViewBag.Users)).Count() == ((MultiSelectList)(ViewBag.AssignedUsers)).Count()){
+                        <button type = "button" class = "btn btn-light btn-sm" disabled>&gt;</button><br />
+                        <button type = "button" class = "btn btn-light btn-sm" disabled>&gt;&gt;</button><br />
+                    } else {
+                        <button type = "button" class = "btn btn-light btn-sm">&gt;</button><br />
+                        <button type = "button" class = "btn btn-light btn-sm">&gt;&gt;</button><br />
+                    }
+                    @if (((MultiSelectList)(ViewBag.AssignedUsers)).Count() == 0) {
+                        <button type = "button" class = "btn btn-light btn-sm" disabled>&lt;</button><br />
+                        <button type = "button" class = "btn btn-light btn-sm" disabled>&lt;&lt;</button>
+                    } else {
+                        <button type = "button" class = "btn btn-light btn-sm" disabled>&lt;</button><br />
+                        <button type = "button" class = "btn btn-light btn-sm" disabled>&lt;&lt;</button>
+                    }
+                </div>
+                <div class="col">
+                    <label asp-for="AssignedUsers" class="control-label"></label>
+                    @Html.ListBox("SelectedUsers", ViewBag.AssignedUsers, new { size = "8", @class = "form-control"})
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -46,6 +46,12 @@ namespace Bugtracker.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
+            var users = _context.TrackerUsers.Select(u => new { 
+                ID = u.ID, 
+                Name = u.Name 
+            }).ToList();
+            ViewBag.Users = new MultiSelectList(users, "ID", "Name");
+            ViewBag.AssignedUsers = new MultiSelectList(new List<ProjectUser>());
             return View();
         }
 
@@ -54,10 +60,11 @@ namespace Bugtracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,Description,DateCreated")] Project project)
+        public async Task<IActionResult> Create([Bind("ID,Title,Description,AssignedUsers")] Project project)
         {
             if (ModelState.IsValid)
             {
+                project.DateCreated = DateTime.Now;
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

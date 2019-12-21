@@ -7,8 +7,9 @@ namespace Bugtracker.Models {
         public int ID {  get; set; }
         public string Title { get; set; } 
         public string Description { get; set; }
-        [DataType(DataType.Date)]
+        [Display(Name = "Date Created")]
         public DateTime DateCreated { get; set;}
+        [Display(Name = "Assigned Users")]
         public List<ProjectUser> AssignedUsers { get; set; }
         public List<Ticket> Tickets { get; set; }
     }

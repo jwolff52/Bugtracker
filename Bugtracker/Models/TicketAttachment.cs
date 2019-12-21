@@ -1,11 +1,12 @@
-using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bugtracker.Models {
     public class TicketAttachment {
         public int ID { get; set; }
-        public int TicketID { get; set; }
-        public int UploaderID { get; set; }
+        public Ticket Ticket { get; set; }
+        public TrackerUser Uploader { get; set; }
         public string Notes { get; set; }
-        public string File_Location { get; set; }
+        [Display(Name="File")]
+        public string FileLocation { get; set; }
     }
 }

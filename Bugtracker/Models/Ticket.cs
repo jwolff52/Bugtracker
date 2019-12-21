@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bugtracker.Models {
     public class Ticket {
@@ -7,17 +8,19 @@ namespace Bugtracker.Models {
         public string Title { get; set; }
         public string Description { get; set; }
         public List<TicketUser> AssignedDevelopers { get; set; }
-        public int UserID { get; set; }
-        public int ProjectID { get; set; }
+        public TrackerUser User { get; set; }
+        public Project Project { get; set; }
         public Priority Priority { get; set; }
         public Status Status { get; set; }
         public Type Type { get; set; }
+        [Display(Name = "Date Created")]
         public DateTime DateCreated { get; set; }
+        [Display(Name = "Date Updated")]
         public DateTime DateUpdated { get; set; }
 
-        public List<TicketHistory> HistoryIDs { get; set; }
-        public List<TicketComment> CommentIDs { get; set; }
-        public List<TicketAttachment> AttachmentIDs { get; set; }
+        public List<TicketHistory> Historys { get; set; }
+        public List<TicketComment> Comments { get; set; }
+        public List<TicketAttachment> Attachments { get; set; }
     }
 
     public class TicketUser {

@@ -15,12 +15,19 @@ namespace Bugtracker.Models {
                 context.Database.ExecuteSqlRaw("PRAGMA ignore_check_constraints=true;");
                 
                 seedUsers(context);
-                seedTickets(context);
                 seedProjects(context);
+                seedTickets(context);
+                updateProjectTickets(context);
 
                 context.Database.ExecuteSqlRaw("PRAGMA foreign_keys=ON;");
                 context.Database.ExecuteSqlRaw("PRAGMA ignore_check_constraints=false;");
                 context.Database.CloseConnection();
+            }
+        }
+
+        private static void updateProjectTickets(BugtrackerContext context) {
+            for(int i = 0; i < context.Projects.Count(); i++) {
+                context.Projects.AsEnumerable().ElementAt(i).Tickets = context.Tickets.Where(t => t.Project.ID == context.Projects.AsEnumerable().ElementAt(i).ID).ToList();
             }
         }
 
@@ -37,21 +44,21 @@ namespace Bugtracker.Models {
                     Description = "A test project",
                     DateCreated = DateTime.Now,
                     AssignedUsers = context.ProjectUsers.Where(u => u.ProjectID == 1).ToList(),
-                    Tickets = context.Tickets.Where(t => t.ProjectID == 1).ToList()
+                    Tickets = context.Tickets.Where(t => t.Project.ID == 1).ToList()
                 },
                 new Project {
                     Title = "Test Project 2",
                     Description = "A test project",
                     DateCreated = DateTime.Now,
                     AssignedUsers = context.ProjectUsers.Where(u => u.ProjectID == 2).ToList(),
-                    Tickets = context.Tickets.Where(t => t.ProjectID == 2).ToList()
+                    Tickets = context.Tickets.Where(t => t.Project.ID == 2).ToList()
                 },
                 new Project {
                     Title = "Test Project 3",
                     Description = "A test project",
                     DateCreated = DateTime.Now,
                     AssignedUsers = context.ProjectUsers.Where(u => u.ProjectID == 3).ToList(),
-                    Tickets = context.Tickets.Where(t => t.ProjectID == 3).ToList()
+                    Tickets = context.Tickets.Where(t => t.Project.ID == 3).ToList()
                 }
             );
 
@@ -109,71 +116,76 @@ namespace Bugtracker.Models {
                   Title = "A test ticket",
                   Description = "Stuff is very broken and that is not good",
                   AssignedDevelopers = context.TicketUsers.Where(u => u.TicketID == 1).ToList(),
-                  UserID = 1,
-                  ProjectID = 1,
+                  User = context.TrackerUsers.Where(u => u.ID == 1).Single(),
+                  Project = context.Projects.Where(p => p.ID == 1).Single(),
                   Priority = Priority.Medium,
                   Status = Status.In_Progress,
                   Type = Type.Bug,
                   DateCreated = DateTime.Now,
-                  HistoryIDs = new List<TicketHistory>(),
-                  CommentIDs = new List<TicketComment>(),
-                  AttachmentIDs = new List<TicketAttachment>()
+                  DateUpdated = DateTime.Now,
+                  Historys = new List<TicketHistory>(),
+                  Comments = new List<TicketComment>(),
+                  Attachments = new List<TicketAttachment>()
               },
               new Ticket {
                   Title = "A test ticket",
                   Description = "Stuff is very broken and that is not good",
                   AssignedDevelopers = context.TicketUsers.Where(u => u.TicketID == 2).ToList(),
-                  UserID = 1,
-                  ProjectID = 2,
+                  User = context.TrackerUsers.Where(u => u.ID == 1).Single(),
+                  Project = context.Projects.Where(p => p.ID == 2).Single(),
                   Priority = Priority.Medium,
                   Status = Status.In_Progress,
                   Type = Type.Bug,
                   DateCreated = DateTime.Now,
-                  HistoryIDs = new List<TicketHistory>(),
-                  CommentIDs = new List<TicketComment>(),
-                  AttachmentIDs = new List<TicketAttachment>()
+                  DateUpdated = DateTime.Now,
+                  Historys = new List<TicketHistory>(),
+                  Comments = new List<TicketComment>(),
+                  Attachments = new List<TicketAttachment>()
               },
               new Ticket {
                   Title = "A test ticket",
                   Description = "Stuff is very broken and that is not good",
                   AssignedDevelopers = context.TicketUsers.Where(u => u.TicketID == 3).ToList(),
-                  UserID = 4,
-                  ProjectID = 3,
+                  User = context.TrackerUsers.Where(u => u.ID == 4).Single(),
+                  Project = context.Projects.Where(p => p.ID == 3).Single(),
                   Priority = Priority.Medium,
                   Status = Status.In_Progress,
                   Type = Type.Bug,
                   DateCreated = DateTime.Now,
-                  HistoryIDs = new List<TicketHistory>(),
-                  CommentIDs = new List<TicketComment>(),
-                  AttachmentIDs = new List<TicketAttachment>()
+                  DateUpdated = DateTime.Now,
+                  Historys = new List<TicketHistory>(),
+                  Comments = new List<TicketComment>(),
+                  Attachments = new List<TicketAttachment>()
               },
               new Ticket {
                   Title = "A test ticket",
                   Description = "Stuff is very broken and that is not good",
                   AssignedDevelopers = context.TicketUsers.Where(u => u.TicketID == 4).ToList(),
-                  UserID = 2,
-                  ProjectID = 1,
+                  User = context.TrackerUsers.Where(u => u.ID == 2).Single(),
+                  Project = context.Projects.Where(p => p.ID == 1).Single(),
                   Priority = Priority.Medium,
                   Status = Status.In_Progress,
                   Type = Type.Bug,
                   DateCreated = DateTime.Now,
-                  HistoryIDs = new List<TicketHistory>(),
-                  CommentIDs = new List<TicketComment>(),
-                  AttachmentIDs = new List<TicketAttachment>()
+                  DateUpdated = DateTime.Now,
+                  Historys = new List<TicketHistory>(),
+                  Comments = new List<TicketComment>(),
+                  Attachments = new List<TicketAttachment>()
               },
               new Ticket {
                   Title = "A test ticket",
                   Description = "Stuff is very broken and that is not good",
                   AssignedDevelopers = context.TicketUsers.Where(u => u.TicketID == 5).ToList(),
-                  UserID = 2,
-                  ProjectID = 1,
+                  User = context.TrackerUsers.Where(u => u.ID == 2).Single(),
+                  Project = context.Projects.Where(p => p.ID == 1).Single(),
                   Priority = Priority.Medium,
                   Status = Status.In_Progress,
                   Type = Type.Bug,
                   DateCreated = DateTime.Now,
-                  HistoryIDs = new List<TicketHistory>(),
-                  CommentIDs = new List<TicketComment>(),
-                  AttachmentIDs = new List<TicketAttachment>()
+                  DateUpdated = DateTime.Now,
+                  Historys = new List<TicketHistory>(),
+                  Comments = new List<TicketComment>(),
+                  Attachments = new List<TicketAttachment>()
               }
             );
 
