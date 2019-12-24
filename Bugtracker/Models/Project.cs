@@ -5,7 +5,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Bugtracker.Models {
     public class Project {
         public int ID {  get; set; }
+        [Required]
         public string Title { get; set; } 
+        [Required]
         public string Description { get; set; }
         [Display(Name = "Date Created")]
         public DateTime DateCreated { get; set;}

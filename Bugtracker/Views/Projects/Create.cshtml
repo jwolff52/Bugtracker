@@ -25,32 +25,16 @@
             <div class="form-group row align-items-center">
                 <div class="col">
                     <label class="control-label">Avaliable Users</label>
-                    @Html.ListBox("AvaliableUsers", ViewBag.Users, new { size = "8", @class = "form-control"})
+                    <select id="AvaliableUsers" size="8" class="form-control" multiple></select>
                 </div>
-                <div class="text-center">
-                    <br />
-                    @if (((MultiSelectList)(ViewBag.Users)).Count() == ((MultiSelectList)(ViewBag.AssignedUsers)).Count()){
-                        <button type = "button" class = "btn btn-light btn-sm" disabled>&gt;</button><br />
-                        <button type = "button" class = "btn btn-light btn-sm" disabled>&gt;&gt;</button><br />
-                    } else {
-                        <button type = "button" class = "btn btn-light btn-sm">&gt;</button><br />
-                        <button type = "button" class = "btn btn-light btn-sm">&gt;&gt;</button><br />
-                    }
-                    @if (((MultiSelectList)(ViewBag.AssignedUsers)).Count() == 0) {
-                        <button type = "button" class = "btn btn-light btn-sm" disabled>&lt;</button><br />
-                        <button type = "button" class = "btn btn-light btn-sm" disabled>&lt;&lt;</button>
-                    } else {
-                        <button type = "button" class = "btn btn-light btn-sm" disabled>&lt;</button><br />
-                        <button type = "button" class = "btn btn-light btn-sm" disabled>&lt;&lt;</button>
-                    }
-                </div>
+                <div id="dsb-buttons" class="text-center"></div>
                 <div class="col">
                     <label asp-for="AssignedUsers" class="control-label"></label>
-                    @Html.ListBox("SelectedUsers", ViewBag.AssignedUsers, new { size = "8", @class = "form-control"})
+                    @Html.ListBox("SelectedUsers", (MultiSelectList)ViewBag.AssignedUsers, new { size=8, @class="form-control"})
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input id="dsb-submit" type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -62,4 +46,13 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/DualSelectBox.js"></script>
+    <script>
+        var leftBox = @Html.Raw(Json.Serialize(((MultiSelectList)ViewBag.Users).Items));
+        var rightBox = @Html.Raw(Json.Serialize(((MultiSelectList)ViewBag.AssignedUsers).Items));
+        var leftBoxId = "AvaliableUsers";
+        var rightBoxId = "SelectedUsers";
+
+        new DualSelectBox(leftBox, rightBox, leftBoxId, rightBoxId).init().RightSubmit();
+    </script>
 }

@@ -23,10 +23,16 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DateCreated" class="control-label"></label>
-                <input asp-for="DateCreated" class="form-control" />
-                <span asp-validation-for="DateCreated" class="text-danger"></span>
+            <div class="form-group row align-items-center">
+                <div class="col">
+                    <label class="control-label">Avaliable Users</label>
+                    <select id="AvaliableUsers" size="8" class="form-control" multiple></select>
+                </div>
+                <div id="dsb-buttons" class="text-center"></div>
+                <div class="col">
+                    <label asp-for="AssignedUsers" class="control-label"></label>
+                    @Html.ListBox("SelectedUsers", (MultiSelectList)ViewBag.AssignedUsers, new { size=8, @class="form-control"})
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -41,4 +47,13 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/DualSelectBox.js"></script>
+    <script>
+        var leftBox = @Html.Raw(Json.Serialize(((MultiSelectList)ViewBag.Users).Items));
+        var rightBox = @Html.Raw(Json.Serialize(((MultiSelectList)ViewBag.AssignedUsers).Items));
+        var leftBoxId = "AvaliableUsers";
+        var rightBoxId = "SelectedUsers";
+
+        new DualSelectBox(leftBox, rightBox, leftBoxId, rightBoxId).init().RightSubmit();
+    </script>
 }

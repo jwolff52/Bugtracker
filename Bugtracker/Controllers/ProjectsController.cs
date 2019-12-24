@@ -46,12 +46,14 @@ namespace Bugtracker.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
-            var users = _context.TrackerUsers.Select(u => new { 
-                ID = u.ID, 
-                Name = u.Name 
-            }).ToList();
-            ViewBag.Users = new MultiSelectList(users, "ID", "Name");
-            ViewBag.AssignedUsers = new MultiSelectList(new List<ProjectUser>());
+            ViewBag.Users = new MultiSelectList(_context.TrackerUsers.Select(u => new {
+                Name = u.Name,
+                ID = u.ID
+            }).ToList(), "ID", "Name");
+            ViewBag.AssignedUsers = new MultiSelectList(new List<Tuple<string, int>>().Select(t => new {
+                Name = t.Item1,
+                ID = t.Item2
+            }).ToList(), "ID", "Name");
             return View();
         }
 
@@ -60,15 +62,33 @@ namespace Bugtracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,Description,AssignedUsers")] Project project)
+        public async Task<IActionResult> Create([Bind("Title,Description")] Project project, int[] SelectedUsers)
         {
             if (ModelState.IsValid)
             {
                 project.DateCreated = DateTime.Now;
+                if (project.AssignedUsers == null) {
+                    project.AssignedUsers = new List<ProjectUser>();
+                }
+                foreach(int i in SelectedUsers) {
+                    TrackerUser user = await _context.TrackerUsers.FirstOrDefaultAsync(u => u.ID == i);
+                    int pID = (int)NextProjectID() + 1;
+                    ProjectUser pUser = new ProjectUser {
+                        ProjectID = pID,
+                        UserID = user.ID
+                    };
+                    System.Diagnostics.Debug.WriteLine(pUser.ProjectID);
+                    System.Diagnostics.Debug.WriteLine(pUser.UserID);
+                    if (!project.AssignedUsers.Contains(pUser)) {
+                        System.Diagnostics.Debug.WriteLine("Adding User");
+                        project.AssignedUsers.Add(pUser);
+                    }
+                }
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(project);
         }
 
@@ -85,7 +105,15 @@ namespace Bugtracker.Controllers
             {
                 return NotFound();
             }
-            return View(project);
+            ViewBag.Users = new MultiSelectList(_context.TrackerUsers.Select(u => new {
+                Name = u.Name,
+                ID = u.ID
+            }).ToList(), "ID", "Name");
+            ViewBag.AssignedUsers = new MultiSelectList(project.AssignedUsers.Select(u => new {
+                Name = _context.TrackerUsers.FirstOrDefault(t => t.ID == u.UserID).Name,
+                ID = u.UserID
+            }).ToList(), "ID", "Name");
+            return View();
         }
 
         // POST: Projects/Edit/5
@@ -93,7 +121,7 @@ namespace Bugtracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Description,DateCreated")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Description")] Project project, int[] SelectedUsers)
         {
             if (id != project.ID)
             {
@@ -102,6 +130,23 @@ namespace Bugtracker.Controllers
 
             if (ModelState.IsValid)
             {
+                if (project.AssignedUsers == null) {
+                    project.AssignedUsers = new List<ProjectUser>();
+                }
+                foreach(int i in SelectedUsers) {
+                    TrackerUser user = await _context.TrackerUsers.FirstOrDefaultAsync(u => u.ID == i);
+                    int pID = (int)NextProjectID() + 1;
+                    ProjectUser pUser = new ProjectUser {
+                        ProjectID = pID,
+                        UserID = user.ID
+                    };
+                    System.Diagnostics.Debug.WriteLine(pUser.ProjectID);
+                    System.Diagnostics.Debug.WriteLine(pUser.UserID);
+                    if (!project.AssignedUsers.Contains(pUser)) {
+                        System.Diagnostics.Debug.WriteLine("Adding User");
+                        project.AssignedUsers.Add(pUser);
+                    }
+                }
                 try
                 {
                     _context.Update(project);
@@ -155,6 +200,19 @@ namespace Bugtracker.Controllers
         private bool ProjectExists(int id)
         {
             return _context.Projects.Any(e => e.ID == id);
+        }
+
+        private long NextProjectID() {
+            using(var command = _context.Database.GetDbConnection().CreateCommand()) {
+                command.CommandText = "SELECT * FROM SQLITE_SEQUENCE WHERE name = 'Projects'";
+                _context.Database.OpenConnection();
+                using (var result = command.ExecuteReader()) {
+                    while (result.Read()) {
+                        return (long)result.GetValue(1) + 1;
+                    }
+                }
+            }
+            return 0;
         }
     }
 }

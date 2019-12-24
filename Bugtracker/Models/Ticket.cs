@@ -5,13 +5,20 @@ using System.ComponentModel.DataAnnotations;
 namespace Bugtracker.Models {
     public class Ticket {
         public int ID { get; set; }
+        [Required]
         public string Title { get; set; }
+        [Required]
         public string Description { get; set; }
         public List<TicketUser> AssignedDevelopers { get; set; }
+        [Required]
         public TrackerUser User { get; set; }
+        [Required]
         public Project Project { get; set; }
+        [Required]
         public Priority Priority { get; set; }
+        [Required]
         public Status Status { get; set; }
+        [Required]
         public Type Type { get; set; }
         [Display(Name = "Date Created")]
         public DateTime DateCreated { get; set; }
